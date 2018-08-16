@@ -56,8 +56,8 @@ def next_board_state(og_state):
                 nb_6 = og_state[i+1,j-1]
                 nb_7 = og_state[i+1,j]
                 nb_8 = og_state[i+1,j+1]
-                nb = [nb_0, nb_1, nb_2, nb_3, nb_4, nb_5, nb_6, nb_7, nb_8]
-                for k in nb:
+                nb_normal = [nb_0, nb_1, nb_2, nb_3, nb_4, nb_5, nb_6, nb_7, nb_8]
+                for k in nb_normal:
                     if k == 0:
                         dead_neighbors = dead_neighbors + 1
                     elif k == 1:
@@ -71,8 +71,21 @@ def next_board_state(og_state):
                         new_state[i,j] = 0
                 elif cell == 0 and alive_neighbors == 3:
                     new_state[i,j] = 1
-            else:
-                # Process (literal) edge cases
+            elif (i == 0) and (j > 0) and (j < c-1): #north edge
+                nb_0 = og_state[i,j-1] 
+                nb_1 = og_state[i,j]
+                nb_2 = og_state[i,j+1]
+                nb_3 = og_state[i+1,j-1]
+                nb_4 = og_state[i+1,j]
+                nb_5 = og_state[i+1,j+1]
+                nb_north = [nb_0, nb_1, nb_2, nb_3, nb_4, nb_5]
+                for k in nb_north:
+                    if k == 0:
+                        dead_neighbors = dead_neighbors + 1
+                    elif k == 1:
+                        alive_neighbors = alive_neighbors + 1
+                if cell == 1: #alive
+            else: #corners
     return new_state
 
 if  __name__ == "__main__":
