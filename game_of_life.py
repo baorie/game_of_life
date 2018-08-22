@@ -1,6 +1,8 @@
-import time, curses
+import time, curses, os
 import numpy as np
 import random as rd
+
+TERMINAL_SIZE = os.get_terminal_size()
 
 def dead_state(width, height):
     return np.zeros(shape=(width,height), dtype= int)
@@ -30,7 +32,10 @@ def render(state):
                 row += chr(9617) + chr(9617)
             elif state[i,j] == 1:
                 row += chr(9608) + chr(9608)
-        table = table + row + "\n"
+        if not (i == r-1):
+            table = table + row + "\n"
+        else:
+            table = table + row
     return table
 
 def next_board_state(og_state):
@@ -236,15 +241,16 @@ def next_board_state(og_state):
     return new_state
 
 if  __name__ == "__main__":
-    board_width = int(input("Please enter a board width: "))
-    board_height = int(input("Please enter a board height: "))
-    start_state = random_state(board_width, board_height)
-    scr = curses.initscr()
-    scr.addstr(0, 20, render(start_state))
-    """
-    while True:
-        next_state = next_board_state(start_state)
-        scr.addstr(0, 20, render(next_state))
-        scr.refresh()
-        time.sleep(1)
-    """
+
+    board_height = int(input("Please enter a board height less than or equal to " + str(TERMINAL_SIZE.columns//2)+ ": "))
+    board_width = int(input("Please enter a board width less than or equal to " + str(TERMINAL_SIZE.lines) +": "))
+    prev_state = random_state(board_width, board_height)
+    stdscr = curses.initscr()
+    i = 0
+    while(i < 30):
+        next_state = next_board_state(prev_state)
+        prev_state = next_state
+        stdscr.addstr(0,0, render(next_state))
+        stdscr.refresh()
+        time.sleep(0.25)
+        i = i + 1
